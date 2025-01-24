@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-from PIL import Image, ImageTk  # Para manejar la imagen de logo
 from Controlador.ControladorLogIn import ControladorLogin
 from Vistas.Inicio import InterfazInicio
 
