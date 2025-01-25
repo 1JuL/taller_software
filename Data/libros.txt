@@ -1,7 +1,0 @@
-Los vagabundos de Dios|Mario Mendoza|literario|2024|Assets\Los vagabundos de dios.jfif
-Cien años de soledad|Gabriel Garcia Marquez|literario|2005|Assets\Gabito.jfif
-Satanas|Mario Mendoza|literario|2010|Assets\Satanas.jfif
-Relato de un Asesino|Mario Mendoza|literario|2010|Assets\relato de un asesino.jpg
-Harry Potter y la piedra filosofal|J.K Rolling|fantasia|2001|Assets\o7.jfif
-hola|mario|fantasia|2014|Assets\gabo.jfif
-programacion|programacion|fantasia|2014|Assets\Gabito.jfif
