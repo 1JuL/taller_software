@@ -138,10 +138,10 @@ const Home = () => {
             </Navbar>
 
             <section className="container-fluid mh-100 bg-secondary">
-                <Row>
+                <Row className="m-4 p-4">
                     {personas.map((persona, index) => (
                         <Col md={4} key={index}>
-                            <Card className="mb-4">
+                            <Card>
                                 <Card.Body>
                                     <Card.Title>{`${persona.nombre} ${persona.apellido}`}</Card.Title>
                                     <Card.Text>
