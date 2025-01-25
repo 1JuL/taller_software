@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         nombre: '',
@@ -134,6 +136,13 @@ const Register = () => {
                         className="btn btn-primary w-100"
                     >
                         Registrarme
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-light w-100 mt-3"
+                        onClick={() => navigate('/')}
+                    >
+                        Volver al Inicio
                     </button>
                 </form>
             </div>
