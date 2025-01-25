@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes";
 
@@ -20,12 +19,12 @@ const Root = () => {
         </h1>
         <div className="d-flex flex-column gap-3">
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="px-4 py-2 bg-primary text-white rounded-lg"
             onClick={goto_Signup}>
             Formulario de Registro
           </button>
           <button
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            className="px-4 py-2 bg-success text-white rounded-lg"
             onClick={goto_Login}>
             Inicio de Sesión Administración
           </button>

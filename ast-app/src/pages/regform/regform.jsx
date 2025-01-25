@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -23,19 +27,31 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(JSON.stringify(formData, null, 2));
+    //console.log(JSON.stringify(formData, null, 2));
+
+    try {
+      const response = await axios.post(
+        "https://api-arqui.vercel.app/personas",
+        formData
+      );
+      console.log("Persona creada:", response.data);
+      alert("Registro exitoso");
+    } catch (error) {
+      console.error("Error al registrar la persona:", error);
+      alert("Hubo un problema al registrar la persona");
+    }
   };
 
   return (
-    <section className="w-100 h-100 d-flex justify-content-center align-items-center">
+    <section className=" h-100 d-flex justify-content-center align-items-center bg-#213547 text-white">
       <div
-        className="p-4 m-3 shadow h-100 rounded bg-secondary text-white"
+        className="card p-4 shadow mh-100 my-2 overflow-auto bg-secondary text-white"
         style={{ maxWidth: "500px" }}>
-        <h1 className="text-center mb-2">Formulario de Registro</h1>
+        <h1 className="text-center mb-4">Formulario de Registro</h1>
         <form onSubmit={handleSubmit}>
-          <div className="row mb-2">
+          <div className="row mb-3">
             <div className="col-12">
               <label className="form-label" htmlFor="nombre">
                 Nombre
@@ -51,7 +67,7 @@ const Register = () => {
               />
             </div>
           </div>
-          <div className="row mb-2">
+          <div className="row mb-3">
             <div className="col-12">
               <label className="form-label" htmlFor="apellido">
                 Apellido
@@ -67,7 +83,7 @@ const Register = () => {
               />
             </div>
           </div>
-          <div className="row mb-2">
+          <div className="row mb-3">
             <div className="col-12">
               <label className="form-label" htmlFor="fechaNacimiento">
                 Fecha de Nacimiento
@@ -83,7 +99,7 @@ const Register = () => {
               />
             </div>
           </div>
-          <div className="row mb-2">
+          <div className="row mb-3">
             <div className="col-12">
               <label className="form-label" htmlFor="telefono">
                 Teléfono
@@ -99,7 +115,7 @@ const Register = () => {
               />
             </div>
           </div>
-          <div className="row mb-2">
+          <div className="row mb-3">
             <div className="col-12">
               <label className="form-label" htmlFor="direccion">
                 Dirección
@@ -115,7 +131,7 @@ const Register = () => {
               />
             </div>
           </div>
-          <div className="row mb-2">
+          <div className="row mb-3">
             <div className="col-12">
               <label className="form-label" htmlFor="email">
                 Email
@@ -133,6 +149,12 @@ const Register = () => {
           </div>
           <button type="submit" className="btn btn-primary w-100">
             Registrarme
+          </button>
+          <button
+            type="button"
+            className="btn btn-light w-100 mt-3"
+            onClick={() => navigate("/")}>
+            Volver al Inicio
           </button>
         </form>
       </div>
