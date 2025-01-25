@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes";
-import Toast from "react-bootstrap/Toast";
-import ToastContainer from "react-bootstrap/ToastContainer";
+import { useAuth } from "../../components/AuthContext";
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
 
 const User = "Admin";
 const Password = "Admin";
@@ -10,12 +11,14 @@ const Password = "Admin";
 const Login = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
   const goto_Home = () => {
     setShow(false);
     if (name === User && password === Password) {
+      login();
       navigate(ROUTES.HOME.path, { replace: true });
     } else {
       setShow(true);
@@ -73,12 +76,7 @@ const Login = () => {
       </div>
       <div>
         <ToastContainer position="top-center" className="mt-4">
-          <Toast
-            onClose={() => setShow(false)}
-            show={show}
-            delay={3000}
-            autohide
-            className="bg-danger text-white">
+          <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide className="bg-danger text-white" >
             <Toast.Body>Usuario o contraseña incorrectos.</Toast.Body>
           </Toast>
         </ToastContainer>
