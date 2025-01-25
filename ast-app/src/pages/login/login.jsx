@@ -19,12 +19,12 @@ const Login = () => {
   };
 
   return (
-    <div className="fmin-vh-100 d-flex justify-content-center align-items-center bg-#213547 text-white">
+    <div className="w-100 h-100 d-flex justify-content-center align-items-center">
       <div
         className="card p-4 shadow w-100 bg-secondary text-white"
         style={{ maxWidth: "500px" }}>
         <h1 className="text-center mb-4">Administrador</h1>
-        <div className="">
+        <div className="d-flex flex-column gap-2">
           <section>
             <label htmlFor="user" className="form-label">
               Usuario:
