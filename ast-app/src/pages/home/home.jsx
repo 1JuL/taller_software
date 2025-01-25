@@ -16,7 +16,7 @@ const Home = () => {
         bg="dark"
         data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="#home" className="text-white">
+          <Navbar.Brand className="text-white">
             AST
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
