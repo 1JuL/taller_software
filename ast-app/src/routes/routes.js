@@ -15,6 +15,22 @@ export const ROUTES = {
     path: "/home",
     label: "home",
   },
+  PERSONAS: {
+    path: "/personas",
+    label: "personas",
+  },
+  TORNEOS: {
+    path: "/torneos",
+    label: "torneos",
+  },
+  ENTRENAMIENTO: {
+    path: "/entrenamiento",
+    label: "entrenamiento",
+  },
+  PAGOS: {
+    path: "/pagos",
+    label: "pagos",
+  },
   ERROR_404: {
     path: "/404",
     label: "not found",

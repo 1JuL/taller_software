@@ -29,7 +29,6 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //console.log(JSON.stringify(formData, null, 2));
 
     try {
       const response = await axios.post(
