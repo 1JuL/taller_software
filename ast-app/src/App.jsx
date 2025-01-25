@@ -1,15 +1,21 @@
 import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Home, Login, Root, RegForm } from './pages'
+import { ROUTES } from './routes';
 
 function App() {
   return (
     <>
-      <div className="container">
-        <h1 className="my-5 text-center">Hello, Bootstrap in React!</h1>
-        <button className="btn btn-primary">Click Me</button>
-        <div className="my-3">
-          <p className="alert alert-info">This is a Bootstrap alert!</p>
-        </div>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path={ROUTES.HOME.path} element={<Home />} />
+          <Route path={ROUTES.LOGIN.path} element={<Login />} />
+          <Route path={ROUTES.ROOT.path} element={<Root />} />
+          <Route path={ROUTES.REGISTER.path} element={<RegForm />} />
+          <Route path={ROUTES.ERROR_404.path} element={<div><h1>Not found</h1></div>} />
+          <Route path="*" element={<Navigate to={ROUTES.ERROR_404.path} replace />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

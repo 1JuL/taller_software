@@ -1,23 +1,19 @@
 export const ROUTES = {
   ROOT: {
     path: "/",
-    label: "home",
+    label: "root",
   },
-  OVERVIEW: {
-    path: "/overview",
-    label: "overview",
+  REGISTER: {
+    path: "/reg",
+    label: "regform",
   },
   LOGIN: {
     path: "/login",
     label: "login",
   },
-  PROFILE: {
-    path: "/profile",
-    label: "profile",
-  },
   HOME: {
     path: "/home",
-    label: "start",
+    label: "home",
   },
   ERROR_404: {
     path: "/404",
