@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 
 const Register = () => {
 
@@ -24,9 +25,18 @@ const Register = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(JSON.stringify(formData, null, 2));
+        //console.log(JSON.stringify(formData, null, 2));
+
+        try {
+            const response = await axios.post("https://api-arqui.vercel.app/personas", formData);
+            console.log("Persona creada:", response.data);
+            alert("Registro exitoso");
+        } catch (error) {
+            console.error("Error al registrar la persona:", error);
+            alert("Hubo un problema al registrar la persona");
+        }
     };
 
 
