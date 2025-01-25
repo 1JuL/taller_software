@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes";
 import { useAuth } from "../../components/AuthContext";
@@ -11,9 +11,15 @@ const Password = "Admin";
 const Login = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { isAuthenticated, login } = useAuth();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(ROUTES.HOME.path, { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const goto_Home = () => {
     setShow(false);
