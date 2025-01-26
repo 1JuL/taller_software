@@ -123,7 +123,7 @@ const Home = () => {
                 <Row className="m-4 p-4">
                     {personas.map((persona, index) => (
                         <Col md={4} key={index}>
-                            <Card>
+                            <Card className="mt-2">
                                 <Card.Body>
                                     <Card.Title>{`${persona.nombre} ${persona.apellido}`}</Card.Title>
                                     <Card.Text>
