@@ -13,6 +13,8 @@ import Card from "react-bootstrap/Card";
 import PagoModal from "../../components/PagoModal";
 import Toast from "react-bootstrap/Toast";
 import ToastContainer from "react-bootstrap/ToastContainer";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import ActualizarEstadoModal from "../../components/ActualizarEstadoModal";
 
 const pagos = () => {
   const navigate = useNavigate();
@@ -22,16 +24,23 @@ const pagos = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [show, setShow] = useState(false);
 
+  const [ActualizarVisible, setActualizarVisible] = useState(false);
+
+  const manejarAperturaModalModificacion = () => setActualizarVisible(true);
+  const manejarCierreModalModificacion = () => setActualizarVisible(false);
+
+  const manejarEstadoActualizado = () => {
+    setShow(true);
+  };
+
   const manejarAperturaModal = () => {
     setModalVisible(true);
   };
   const manejarCierreModal = () => {
     setModalVisible(false);
-    setShow(true);
   };
   const manejarPagoRegistrado = () => {
-    console.log("Nuevo pago registrado");
-    // Aquí puedes actualizar la lista de pagos o mostrar una notificación
+    setShow(true);
   };
 
   useEffect(() => {
@@ -118,14 +127,14 @@ const pagos = () => {
                     <strong>Monto:</strong> {pago.monto} <br />
                     <strong>Fecha de Pago: </strong>
                     {new Date(pago.fechaPago).toLocaleDateString()} <br />{" "}
-                    <p
+                    <span
                       className={
                         pago.estado == "Pagado"
                           ? "text-success"
                           : "text-warning"
                       }>
                       {pago.estado}
-                    </p>
+                    </span>
                   </Card.Text>
                 </Card.Body>
               </Card>
@@ -137,6 +146,11 @@ const pagos = () => {
           handleClose={manejarCierreModal}
           onPagoRegistrado={manejarPagoRegistrado}
         />
+        <ActualizarEstadoModal
+          show={ActualizarVisible}
+          handleClose={manejarCierreModalModificacion}
+          onEstadoActualizado={manejarEstadoActualizado}
+        />
 
         <ToastContainer position="top-center" className="mt-4">
           <Toast
@@ -144,23 +158,26 @@ const pagos = () => {
             show={show}
             delay={3000}
             autohide
-            className="bg-success text-white">
+            className="bg-success text-white shadow">
             <Toast.Body>Pago registrado correctamente.</Toast.Body>
           </Toast>
         </ToastContainer>
       </section>
 
-      <Button
+      <ButtonGroup
         style={{
           position: "absolute",
           bottom: "0",
           right: "0",
-          margin: "10px",
-        }}
-        className="btn-success"
-        onClick={manejarAperturaModal}>
-        Registrar pago
-      </Button>
+          margin: "30px",
+        }}>
+        <Button variant="success" onClick={manejarAperturaModal}>
+          Registrar pago
+        </Button>
+        <Button variant="warning" onClick={manejarAperturaModalModificacion}>
+          Hacer pago
+        </Button>
+      </ButtonGroup>
     </>
   );
 };
