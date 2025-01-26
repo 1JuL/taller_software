@@ -1,4 +1,11 @@
 # Pasos para correr el programa
+## Integrantes del grupo:
+- Samuel Acero Garcia
+- Juan Pablo Moreno Patarroyo
+- Daniel Santiago Ramirez Chinchilla
+- David Esteban Diaz Vargas
+- Diego Norberto Diaz Algarin
+
 ### 1. Ubicarse en la carpeta de ast-app
 ### 2. Ejecutar el comando "npm i"
 ### 3. Ejecutar el comando "npm run dev"
