@@ -62,7 +62,6 @@ const pagos = () => {
     axios
       .get(`https://api-arqui.vercel.app/pagos/persona/${Id}`)
       .then((response) => {
-        console.log(response.data);
         setPagosPorMes(response.data);
       })
       .catch((error) => {
@@ -175,7 +174,7 @@ const pagos = () => {
           Registrar pago
         </Button>
         <Button variant="warning" onClick={manejarAperturaModalModificacion}>
-          Hacer pago
+          Registrar Pago por ID
         </Button>
       </ButtonGroup>
     </>
