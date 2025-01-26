@@ -15,16 +15,19 @@ const Participacion = () => {
     });
     const [torneos, setTorneos] = useState([]);
     const [personas, setPersonas] = useState([]);
-    const [maxPartidos, setMaxPartidos] = useState(null); // Máximo de partidos del torneo seleccionado
+    const [participaciones, setParticipaciones] = useState([]);
+    const [maxPartidos, setMaxPartidos] = useState(null);
     const [message, setMessage] = useState("");
     const [show, setShow] = useState(false);
+    const [selectedParticipacion, setSelectedParticipacion] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [torneosRes, personasRes] = await Promise.all([
-                    axios.get("https://api-arqui.vercel.app/torneos"), // Cambia a tu endpoint de torneos
-                    axios.get("https://api-arqui.vercel.app/personas"), // Cambia a tu endpoint de personas
+                const [torneosRes, personasRes, participacionesRes] = await Promise.all([
+                    axios.get("https://api-arqui.vercel.app/torneos"),
+                    axios.get("https://api-arqui.vercel.app/personas"),
+                    axios.get("https://api-arqui.vercel.app/participaciones"),
                 ]);
 
                 setTorneos(
@@ -41,13 +44,32 @@ const Participacion = () => {
                         label: `${persona.nombre} ${persona.apellido}`,
                     }))
                 );
+
+                const participacionesWithDetails = participacionesRes.data.map((participacion) => {
+
+                    const torneo = torneosRes.data.find((t) => t._id === participacion.idTorneo._id);
+                    const persona = personasRes.data.find((p) => p._id === participacion.idPersona._id);
+
+                    const torneoNombre = torneo ? torneo.nombreTorneo : "Torneo desconocido";
+                    const personaNombre = persona ? `${persona.nombre} ${persona.apellido}` : "Persona desconocida";
+
+                    return {
+                        value: participacion._id,
+                        label: `${torneoNombre} - ${personaNombre} - Participación ID: ${participacion._id}`,
+                    };
+                });
+
+                setParticipaciones(participacionesWithDetails);
             } catch (error) {
-                showToast("Error al cargar torneos o personas", true);
+                showToast("Error al cargar datos", true);
             }
         };
 
         fetchData();
     }, []);
+
+
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -60,11 +82,10 @@ const Participacion = () => {
     const handleSelectChange = (selectedOption, { name }) => {
         const updatedFormData = { ...formData, [name]: selectedOption ? selectedOption.value : "" };
 
-        // Si se selecciona un torneo, actualiza el número máximo de partidos
         if (name === "idTorneo" && selectedOption) {
             setMaxPartidos(selectedOption.partidosTotales);
         } else if (name === "idTorneo") {
-            setMaxPartidos(null); // Restablece si no se selecciona un torneo
+            setMaxPartidos(null);
         }
 
         setFormData(updatedFormData);
@@ -76,20 +97,16 @@ const Participacion = () => {
         try {
             const { idTorneo, idPersona, puestoObtenido, partidosJugados } = formData;
 
-            // Validación básica
             if (!idTorneo || !idPersona || puestoObtenido === "" || partidosJugados === "") {
                 showToast("Todos los campos son obligatorios", true);
                 return;
             }
 
-            // Validar que partidosJugados no exceda el máximo
             if (parseInt(partidosJugados, 10) > maxPartidos) {
                 showToast("La cantidad de partidos jugados no puede superar el máximo permitido", true);
                 return;
             }
 
-            // Enviar datos a la API
-            console.log(formData);
             await axios.post("https://api-arqui.vercel.app/participaciones", formData);
             showToast("Participación agregada con éxito", false);
             setFormData({
@@ -101,6 +118,22 @@ const Participacion = () => {
             setMaxPartidos(null);
         } catch (error) {
             showToast(error.response?.data?.message || "Ocurrió un error al agregar la participación", true);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!selectedParticipacion) {
+            showToast("Debe seleccionar una participación para eliminar", true);
+            return;
+        }
+
+        try {
+            await axios.delete(`https://api-arqui.vercel.app/participaciones/${selectedParticipacion.value}`);
+            showToast("Participación eliminada con éxito", false);
+            setParticipaciones((prev) => prev.filter((p) => p.value !== selectedParticipacion.value));
+            setSelectedParticipacion(null);
+        } catch (error) {
+            showToast(error.response?.data?.message || "Error al eliminar la participación", true);
         }
     };
 
@@ -123,7 +156,7 @@ const Participacion = () => {
                 </Toast>
             </ToastContainer>
 
-            <h1 className="text-2xl font-bold mb-4 text-light">Agregar Participación</h1>
+            <h2 className="text-2xl font-bold mb-4 text-light">Agregar Participación</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-white text-sm font-medium">Torneo</label>
@@ -175,10 +208,30 @@ const Participacion = () => {
                     Agregar Participación
                 </button>
             </form>
+
+            <h2 className="text-2xl font-bold mb-4 text-light">Eliminar Participación</h2>
+            <div className="mt-4">
+                <label className="block text-white text-sm font-medium">Seleccionar Participación</label>
+                <Select
+                    options={participaciones}
+                    onChange={(option) => setSelectedParticipacion(option)}
+                    placeholder="Selecciona una participación"
+                    isClearable
+                />
+            </div>
             <button
                 type="button"
-                className="btn btn-info w-100"
-                onClick={() => navigate(ROUTES.HOME.path, { replace: true })}>
+                className="btn btn-danger w-100 mt-4 rounded-md hover:bg-red-600"
+                onClick={handleDelete}
+            >
+                Eliminar Participación
+            </button>
+
+            <button
+                type="button"
+                className="btn btn-info w-100 mt-4"
+                onClick={() => navigate(ROUTES.HOME.path, { replace: true })}
+            >
                 Volver al Inicio
             </button>
         </div>
