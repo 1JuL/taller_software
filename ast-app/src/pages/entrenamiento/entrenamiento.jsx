@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap"; // Asegúrate de tener React Bootstrap instalado
 import { ROUTES } from "../../routes";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 const Entrenamiento = () => {
   const navigate = useNavigate();
@@ -257,7 +258,7 @@ const Entrenamiento = () => {
       setEntrenamientos([]); // Limpiar la lista en caso de error
     }
   };
-  
+
 
   // Llamar a fetchEntrenamientos cuando el componente se monte
   useEffect(() => {
@@ -296,24 +297,24 @@ const Entrenamiento = () => {
       </div>
 
       <div className="mb-3">
-  <label htmlFor="horaBuscar" className="form-label">
-    Buscar Entrenamiento por Hora
-  </label>
-  <input
-    type="time"
-    id="horaBuscar"
-    className="form-control"
-    value={hora} // Aquí mantienes el estado para la hora
-    onChange={(e) => setHora(e.target.value)} // Actualizas el estado con la hora
-  />
-  <button
-    type="button"
-    className="btn btn-primary mt-2"
-    onClick={buscarEntrenamientoPorHora} // Función para buscar por hora
-  >
-    Buscar Entrenamiento
-  </button>
-</div>
+        <label htmlFor="horaBuscar" className="form-label">
+          Buscar Entrenamiento por Hora
+        </label>
+        <input
+          type="time"
+          id="horaBuscar"
+          className="form-control"
+          value={hora} // Aquí mantienes el estado para la hora
+          onChange={(e) => setHora(e.target.value)} // Actualizas el estado con la hora
+        />
+        <button
+          type="button"
+          className="btn btn-primary mt-2"
+          onClick={buscarEntrenamientoPorHora} // Función para buscar por hora
+        >
+          Buscar Entrenamiento
+        </button>
+      </div>
 
 
       {/* Mensaje de estado */}
@@ -499,6 +500,20 @@ const Entrenamiento = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ButtonGroup
+        style={{
+          position: "absolute",
+          bottom: "0",
+          right: "0",
+          margin: "30px",
+        }}>
+        <button
+          type="button"
+          className="btn btn-info w-100"
+          onClick={() => navigate(ROUTES.HOME.path, { replace: true })}>
+          Volver al Inicio
+        </button>
+      </ButtonGroup>
     </div>
   );
 };

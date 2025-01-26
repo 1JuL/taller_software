@@ -12,6 +12,8 @@ import Card from "react-bootstrap/Card";
 import Toast from "react-bootstrap/Toast";
 import axios from "axios";
 import PersonModal from "../../components/PersonModal";
+import DetailsModal from "../../components/DetailsModal";
+
 
 const Home = () => {
     const navigate = useNavigate();
@@ -21,6 +23,7 @@ const Home = () => {
     const [modalMode, setModalMode] = useState("view");
     const [showToast, setShowToast] = useState(false);
     const [personaToDelete, setPersonaToDelete] = useState(null);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     useEffect(() => {
         axios
@@ -33,15 +36,14 @@ const Home = () => {
             });
     }, []);
 
+    const handleViewDetails = (persona) => {
+        setSelectedPersona(persona); // Seteamos la persona seleccionada
+        setShowDetailsModal(true); // Mostramos el modal
+    };
+
     const handleEdit = (persona) => {
         setSelectedPersona(persona);
         setModalMode("edit");
-        setShowModal(true);
-    };
-
-    const handleView = (persona) => {
-        setSelectedPersona(persona);
-        setModalMode("view");
         setShowModal(true);
     };
 
@@ -74,7 +76,7 @@ const Home = () => {
                 .delete(`https://api-arqui.vercel.app/personas/${personaToDelete._id}`)
                 .then(() => {
                     setPersonas(personas.filter((p) => p._id !== personaToDelete._id));
-                    setShowToast(false); // Cerrar el Toast
+                    setShowToast(false);
                 })
                 .catch((error) => {
                     console.error("Error al eliminar la persona: ", error);
@@ -138,7 +140,7 @@ const Home = () => {
                                     <Card.Text>
                                         <strong>Email:</strong> {persona.email}
                                     </Card.Text>
-                                    <Button variant="primary" className="me-2" onClick={() => handleView(persona)}>
+                                    <Button variant="primary" className="me-2" onClick={() => handleViewDetails(persona)}>
                                         Ver Detalles
                                     </Button>
                                     <Button variant="warning" className="me-2" onClick={() => handleEdit(persona)}>
@@ -153,6 +155,12 @@ const Home = () => {
                     ))}
                 </Row>
             </section>
+
+            <DetailsModal
+                show={showDetailsModal}
+                onClose={() => setShowDetailsModal(false)}
+                personaId={selectedPersona?._id} // Asegúrate de pasar solo el ID
+            />
 
             <PersonModal
                 show={showModal}
