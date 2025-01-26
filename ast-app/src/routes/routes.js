@@ -31,6 +31,10 @@ export const ROUTES = {
     path: "/pagos",
     label: "pagos",
   },
+  PARTICIPACION: {
+    path: "/participacion",
+    label: "participacion",
+  },
   ERROR_404: {
     path: "/404",
     label: "not found",

@@ -7,3 +7,4 @@ export { default as Personas } from "./personas/personas";
 export { default as Torneos } from "./torneos/torneos";
 export { default as Entrenamiento } from "./entrenamiento/entrenamiento";
 export { default as Pagos } from "./pagos/pagos";
+export { default as Participacion } from "./participacion/participacion";

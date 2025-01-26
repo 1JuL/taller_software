@@ -58,24 +58,6 @@ const Home = () => {
             });
     };
 
-    const handleDelete = (persona) => {
-        const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar a esta persona?");
-
-        if (confirmDelete) {
-            axios
-                .delete(`https://api-arqui.vercel.app/personas/${persona._id}`)
-                .then(() => {
-                    // Actualizar el estado eliminando a la persona
-                    setPersonas(personas.filter((p) => p._id !== persona._id));
-                })
-                .catch((error) => {
-                    console.error("Error al eliminar la persona: ", error);
-                });
-        } else {
-            console.log("Eliminación cancelada.");
-        }
-    };
-
     const handleDeleteRequest = (persona) => {
         setPersonaToDelete(persona);
         setShowToast(true);

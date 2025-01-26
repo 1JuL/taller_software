@@ -22,6 +22,10 @@ const Home = () => {
     navigate(ROUTES.PAGOS.path, { replace: true });
   };
 
+  const goto_Participacion = () => {
+    navigate(ROUTES.PARTICIPACION.path, { replace: true });
+  };
+
   const handleLogout = () => {
     logout(); // Llama al método logout del contexto
     navigate(ROUTES.LOGIN.path, { replace: true }); // Redirige a la página de login tras cerrar sesión
@@ -50,6 +54,11 @@ const Home = () => {
           className="px-4 py-2 bg-primary text-white rounded-lg"
           onClick={goto_Entrenamientos}>
           Entrenamiento
+        </button>
+        <button
+          className="px-4 py-2 bg-primary text-white rounded-lg"
+          onClick={goto_Participacion}>
+          Participacion
         </button>
         <button
           className="px-4 py-2 bg-danger text-white rounded-lg"
