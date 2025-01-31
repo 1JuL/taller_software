@@ -26,7 +26,7 @@ const Root = () => {
           <button
             className="px-4 py-2 bg-success text-white rounded-lg"
             onClick={goto_Login}>
-            Inicio de Sesión Administración
+            Inicio de Sesión
           </button>
         </div>
       </div>
