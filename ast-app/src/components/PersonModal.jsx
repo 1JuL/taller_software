@@ -16,7 +16,7 @@ const PersonModal = ({ show, onClose, persona, onSave, mode }) => {
             setFormData({
                 nombre: persona.nombre,
                 apellido: persona.apellido,
-                fechaNacimiento: persona.fechaNacimiento,
+                fechaNacimiento: persona.fechaNacimiento ? persona.fechaNacimiento.split("T")[0] : "",
                 telefono: persona.telefono,
                 direccion: persona.direccion,
                 email: persona.email,
@@ -34,8 +34,8 @@ const PersonModal = ({ show, onClose, persona, onSave, mode }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(formData); // Llama a la función onSave pasada por las props
-        onClose(); // Cierra el modal después de guardar
+        onSave(formData);
+        onClose();
     };
 
     return (

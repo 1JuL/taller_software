@@ -1,53 +1,59 @@
-// AuthContext.js
 import { createContext, useContext, useState, useEffect } from 'react';
-import CryptoJS from 'crypto-js';
+import { auth } from '../firebase';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
-const HASH_KEY = 'authState';
-
-function encodeAuthState(isAuthenticated) {
-    // Convierte el valor booleano a un hash usando if-else en lugar de ternario
-    let valueToHash;
-    if (isAuthenticated) {
-        valueToHash = 'true';
-    } else {
-        valueToHash = 'false';
-    }
-    return CryptoJS.SHA256(valueToHash).toString();
-}
-
-function decodeAuthState(hash) {
-    // Decodifica el hash y devuelve un valor booleano
-    const decoded = CryptoJS.SHA256('true').toString() === hash;
-    return decoded;
-}
-
 export function AuthProvider({ children }) {
-    const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        // Verifica si el estado de autenticación ya está guardado en el localStorage y decodifica el hash
-        const savedAuthState = localStorage.getItem(HASH_KEY);
-        if (savedAuthState) {
-            return decodeAuthState(savedAuthState);
-        } else {
-            return false;
-        }
-    });
+    const [user, setUser] = useState(null); // Almacena el usuario de Firebase
+    const [role, setRole] = useState(null); // Almacena el rol del usuario
 
     useEffect(() => {
-        // Guarda el estado de autenticación en el localStorage como un hash cuando cambie
-        const authHash = encodeAuthState(isAuthenticated);
-        localStorage.setItem(HASH_KEY, authHash);
-    }, [isAuthenticated]);
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                setUser(user);
+                const userRole = await fetchUserRole(user.uid);
+                setRole(userRole);
+            } else {
+                setUser(null);
+                setRole(null);
+            }
+        });
 
-    const login = () => setIsAuthenticated(true);
-    const logout = () => {
-        setIsAuthenticated(false);
-        localStorage.removeItem(HASH_KEY); // Borra el estado del localStorage al cerrar sesión
+        return () => unsubscribe();
+    }, []);
+
+    const login = async (email, password) => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            const userRole = await fetchUserRole(user.uid);
+            setRole(userRole);
+            return user;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const logout = async () => {
+        try {
+            await signOut(auth);
+            setUser(null);
+            setRole(null);
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const fetchUserRole = async (uid) => {
+        // Llama a tu API para obtener el rol del usuario basado en su UID
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/personas/uid/${uid}/role`);
+        return response.data.role;
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ user, role, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

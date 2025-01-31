@@ -6,12 +6,17 @@ const ActualizarEstadoModal = ({ show, handleClose, onEstadoActualizado }) => {
   const [idPago, setIdPago] = useState("");
 
   const manejarCambio = (e) => {
-    setIdPago(e.target.value);
+    const valor = e.target.value;
+    const regex = /^[a-zA-Z0-9]*$/; // Solo letras y números
+
+    if (regex.test(valor)) {
+      setIdPago(valor);
+    }
   };
 
   const actualizarEstado = async () => {
     try {
-      await axios.put(`https://api-arqui.vercel.app/pagos/${idPago}`, {
+      await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/pagos/${idPago}`, {
         estado: "Pagado",
       });
       onEstadoActualizado(); // Notifica que el estado se actualizó con éxito

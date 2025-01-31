@@ -15,30 +15,44 @@ import PersonModal from "../../components/PersonModal";
 import DetailsModal from "../../components/DetailsModal";
 
 
-const Home = () => {
+const Personas = () => {
     const navigate = useNavigate();
     const [personas, setPersonas] = useState([]);
+    const [allPersonas, setAllPersonas] = useState([]);
     const [selectedPersona, setSelectedPersona] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [modalMode, setModalMode] = useState("view");
     const [showToast, setShowToast] = useState(false);
     const [personaToDelete, setPersonaToDelete] = useState(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         axios
-            .get("https://api-arqui.vercel.app/personas")
+            .get(`${import.meta.env.VITE_REACT_APP_API_URL}/personas`)
             .then((response) => {
                 setPersonas(response.data);
+                setAllPersonas(response.data)
             })
             .catch((error) => {
                 console.error("Error al obtener los datos: ", error);
             });
     }, []);
 
+    const handleSearch = () => {
+        if (searchTerm.trim() === "") {
+            setPersonas(allPersonas);
+        } else {
+            const filteredPersonas = allPersonas.filter((persona) =>
+                `${persona.nombre} ${persona.apellido}`.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setPersonas(filteredPersonas);
+        }
+    };
+
     const handleViewDetails = (persona) => {
-        setSelectedPersona(persona); // Seteamos la persona seleccionada
-        setShowDetailsModal(true); // Mostramos el modal
+        setSelectedPersona(persona);
+        setShowDetailsModal(true);
     };
 
     const handleEdit = (persona) => {
@@ -48,14 +62,16 @@ const Home = () => {
     };
 
     const handleSave = (updatedPersona) => {
+        console.log(updatedPersona)
         const personaId = selectedPersona._id;
         axios
-            .put(`https://api-arqui.vercel.app/personas/${personaId}`, updatedPersona)  // Usamos el `id` para la URL
+            .put(`${import.meta.env.VITE_REACT_APP_API_URL}/personas/${personaId}`, updatedPersona)
             .then((response) => {
                 setPersonas(personas.map((p) => (p._id === personaId ? response.data : p)));
                 setShowModal(false);
             })
             .catch((error) => {
+                console.log(updatedPersona)
                 console.error("Error al actualizar la persona: ", error);
             });
     };
@@ -73,7 +89,7 @@ const Home = () => {
     const handleDeleteConfirm = () => {
         if (personaToDelete) {
             axios
-                .delete(`https://api-arqui.vercel.app/personas/${personaToDelete._id}`)
+                .delete(`${import.meta.env.VITE_REACT_APP_API_URL}/personas/${personaToDelete._id}`)
                 .then(() => {
                     setPersonas(personas.filter((p) => p._id !== personaToDelete._id));
                     setShowToast(false);
@@ -101,10 +117,7 @@ const Home = () => {
                             <Form>
                                 <Row>
                                     <Col xs="auto">
-                                        <Form.Control type="text" placeholder="Usuario" className="mr-sm-2" />
-                                    </Col>
-                                    <Col xs="auto">
-                                        <Button type="submit">Buscar</Button>
+                                        <Form.Control type="text" placeholder="Usuario" className="mr-sm-2" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyUp={handleSearch} />
                                     </Col>
                                     <Col>
                                         <button
@@ -121,7 +134,7 @@ const Home = () => {
                 </Container>
             </Navbar>
 
-            <section className="container-fluid mh-100 bg-secondary">
+            <section className="container-fluid mh-100 bg-secondary overflow-auto">
                 <Row className="m-4 p-4">
                     {personas.map((persona, index) => (
                         <Col md={4} key={index}>
@@ -159,7 +172,7 @@ const Home = () => {
             <DetailsModal
                 show={showDetailsModal}
                 onClose={() => setShowDetailsModal(false)}
-                personaId={selectedPersona?._id} // Asegúrate de pasar solo el ID
+                personaId={selectedPersona?._id}
             />
 
             <PersonModal
@@ -199,4 +212,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Personas;

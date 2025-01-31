@@ -1,35 +1,42 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes";
 import { useAuth } from "../../components/AuthContext";
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
-
-const User = "Admin";
-const Password = "Admin";
+import { use } from "react";
 
 const Login = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, login } = useAuth();
-  const [name, setName] = useState("");
+  const { login, role } = useAuth();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [success, setSuccess] = useState(false)
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate(ROUTES.HOME.path, { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
-
-  const goto_Home = () => {
-    setShow(false);
-    if (name === User && password === Password) {
-      login();
-      navigate(ROUTES.HOME.path, { replace: true });
-    } else {
-      setShow(true);
+  const handleLogin = async () => {
+    try {
+      await login(email, password); // Obtén el rol devuelto
+      console.log(role); // Verifica el rol en la consola
+    } catch (error) {
+      setShow(true); // Muestra el Toast en caso de error
     }
   };
+
+  useEffect(() => {
+    console.log("Rol actual:", role); // Depuración
+    switch (role) {
+      case "admin":
+        navigate(ROUTES.HOME.path, { replace: true });
+        break;
+      case "staff":
+        navigate(ROUTES.HOME.path, { replace: true });
+        break;
+      case "user":
+        navigate(ROUTES.HOME.path, { replace: true });
+        break;
+    }
+  }, [role, navigate]);
 
   return (
     <>
@@ -37,38 +44,38 @@ const Login = () => {
         <div
           className="card p-4 shadow w-100 bg-secondary text-white"
           style={{ maxWidth: "500px" }}>
-          <h1 className="text-center mb-4">Administrador</h1>
+          <h1 className="text-center mb-4">Iniciar Sesión</h1>
           <div className="">
             <section>
-              <label htmlFor="user" className="form-label">
-                Usuario:
+              <label htmlFor="email" className="form-label">
+                Correo:
               </label>
               <input
-                type="text"
+                type="email"
                 className="form-control bg-dark text-white border-light"
-                name="user"
-                id="user"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </section>
 
             <section>
-              <label htmlFor="passw" className="form-label">
+              <label htmlFor="password" className="form-label">
                 Contraseña:
               </label>
               <input
                 type="password"
                 className="form-control bg-dark text-white border-light"
-                name="passw"
-                id="passw"
+                name="password"
+                id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </section>
           </div>
           <div className="space-x-4 flex flex-col">
-            <button className="btn btn-primary w-100 mt-4" onClick={goto_Home}>
+            <button className="btn btn-primary w-100 mt-4" onClick={handleLogin}>
               Ingresar
             </button>
             <button

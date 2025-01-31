@@ -68,11 +68,17 @@ const Torneos = () => {
   };
 
   const handleAbrirModalEdicion = (torneo) => {
-    setTorneoEnEdicion({ ...torneo }); // Copiar los datos del torneo en edición
+    const torneoEd = {
+      nombreTorneo: torneo.nombreTorneo,
+      fecha: torneo.fecha ? torneo.fecha.split("T")[0] : "",
+      partidosTotales: torneo.partidosTotales,
+    }
+    setTorneoEnEdicion({ ...torneoEd }); // Copiar los datos del torneo en edición
     setShowEditModal(true);
   };
 
   const handleActualizarTorneo = (e) => {
+    console.log(torneoEnEdicion)
     e.preventDefault();
     if (!torneoEnEdicion.nombreTorneo || !torneoEnEdicion.fecha || !torneoEnEdicion.partidosTotales) {
       alert("Todos los campos son obligatorios");
@@ -161,7 +167,7 @@ const Torneos = () => {
                     <Card.Title>{torneo.nombreTorneo}</Card.Title>
                     <Card.Text>
                       <strong>Fecha:</strong>{" "}
-                      {new Date(torneo.fecha).toLocaleDateString()}
+                      {torneo.fecha.substring(0, 10)}
                     </Card.Text>
                     <Card.Text>
                       <strong>Partidos Totales:</strong>{" "}

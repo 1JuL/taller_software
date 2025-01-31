@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Modal, Button } from "react-bootstrap"; // Asegúrate de tener React Bootstrap instalado
+import { Modal, Button } from "react-bootstrap";
 import { ROUTES } from "../../routes";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
@@ -8,20 +8,19 @@ const Entrenamiento = () => {
   const navigate = useNavigate();
   const [entrenamientos, setEntrenamientos] = useState([]);
   const [error, setError] = useState("");
-  const [mensaje, setMensaje] = useState(""); // Mensaje de estado
-  const [fecha, setFecha] = useState(""); // Estado para la fecha
-  const [hora, setHora] = useState(""); // Estado para la hora
-  const [idBuscar, setIdBuscar] = useState(""); // Estado para el ID de búsqueda
-  const [entrenamientoEncontrado, setEntrenamientoEncontrado] = useState(null); // Estado para el entrenamiento encontrado
-  const [entrenamientoSeleccionado, setEntrenamientoSeleccionado] =
-    useState(null); // Estado para el entrenamiento seleccionado
-  const [isEditing, setIsEditing] = useState(false); // Estado para controlar si estamos editando
-  const [showModal, setShowModal] = useState(false); // Estado para controlar la visibilidad del modal
-  const [studentName, setStudentName] = useState(""); // Estado para el nombre del estudiante (asumido)
+  const [mensaje, setMensaje] = useState("");
+  const [fecha, setFecha] = useState("");
+  const [hora, setHora] = useState("");
+  const [idBuscar, setIdBuscar] = useState("");
+  const [entrenamientoEncontrado, setEntrenamientoEncontrado] = useState(null);
+  const [entrenamientoSeleccionado, setEntrenamientoSeleccionado] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [studentName, setStudentName] = useState("");
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState("");
-  const [asistentes, setAsistentes] = useState([]); // Estado para los estudiantes que asistieron
-  const [showAsistentesModal, setShowAsistentesModal] = useState(false); // Estado para controlar la visibilidad del modal de asistentes
+  const [asistentes, setAsistentes] = useState([]);
+  const [showAsistentesModal, setShowAsistentesModal] = useState(false);
 
   const fetchAsistentes = async (entrenamientoId) => {
     console.log("ID del entrenamiento:", entrenamientoId);

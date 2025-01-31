@@ -1,3 +1,5 @@
+import unauthorized from "../pages/unauthorized/unauthorized";
+
 export const ROUTES = {
   ROOT: {
     path: "/",
@@ -34,6 +36,14 @@ export const ROUTES = {
   PARTICIPACION: {
     path: "/participacion",
     label: "participacion",
+  },
+  REGSTAFF: {
+    path: "/regstaff",
+    label: "regstaff",
+  },
+  UNAUTHORIZED: {
+    path: "/unauthorized",
+    label: "unauthorized",
   },
   ERROR_404: {
     path: "/404",
