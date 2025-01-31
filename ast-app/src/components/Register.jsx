@@ -57,12 +57,42 @@ const Register = ({ role = "user" }) => {
             if (!/^[a-zA-Z0-9\s]*$/.test(value)) return;
         }
 
-        if (name === "telefono") {
 
+
+        if (name === "telefono") {
             if (!/^\d*$/.test(value)) {
-                if (!/^\d{10}$/.test(value)) {
-                    setMessage("El teléfono debe tener 10 dígitos.");
-                    setType("error")
+                setMessage("El teléfono solo puede contener números.");
+                setType("error");
+                setShow(true);
+                return;
+            }
+
+            // Limitar a solo dígitos
+            const newValue = value.replace(/\D/g, ""); // Eliminar cualquier carácter que no sea un dígito
+
+            // Permitir la escritura progresiva hasta 10 dígitos
+            if (newValue.length > 10) {
+                setMessage("El teléfono debe tener máximo 10 dígitos.");
+                setType("error");
+                setShow(true);
+                return;
+            }
+
+            // Validar solo cuando el usuario haya ingresado los 10 dígitos
+            if (newValue.length === 10) {
+                const phonePattern = /^3\d{9}$/; // Empieza con 3 y tiene 9 dígitos más
+                const zeroPattern = /00000+/; // No puede tener más de 3 ceros consecutivos
+
+                if (!phonePattern.test(newValue)) {
+                    setMessage("El teléfono debe empezar con 3 y tener 10 dígitos.");
+                    setType("error");
+                    setShow(true);
+                    return;
+                }
+
+                if (zeroPattern.test(newValue)) {
+                    setMessage("El teléfono no puede tener más de cuatro ceros consecutivos.");
+                    setType("error");
                     setShow(true);
                     return;
                 }
@@ -225,6 +255,7 @@ const Register = ({ role = "user" }) => {
                                 className="form-control bg-dark text-white border-light"
                                 value={formData.telefono}
                                 onChange={handleChange}
+                                maxLength="10"
                                 required
                             />
                         </div>
