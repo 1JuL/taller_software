@@ -146,9 +146,11 @@ const Register = ({ role = "user" }) => {
             navigate("/login");
         } catch (error) {
             console.error("Error al registrar la persona:", error);
-            setMessage("Hubo un problema al registrar la persona.");
+            setMessage(`Hubo un problema: ${error.message || error}`);
+            setType("error");
             setShow(true);
         }
+
     };
 
     return (

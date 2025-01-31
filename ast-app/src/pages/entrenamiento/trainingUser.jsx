@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes";
 import { useAuth } from "../../components/AuthContext"; // Importar el AuthContext
@@ -6,7 +6,7 @@ import { useAuth } from "../../components/AuthContext"; // Importar el AuthConte
 const TrainingManagement = () => {
     const navigate = useNavigate();
     const { user } = useAuth(); // Obtener el usuario autenticado desde el AuthContext
-    const [entrenamientos, setEntrenamientos] = useState([]);
+    const [asistencias, setAsistencias] = useState([]);
     const [error, setError] = useState("");
     const [mensaje, setMensaje] = useState("");
 
@@ -19,14 +19,15 @@ const TrainingManagement = () => {
                 `${import.meta.env.VITE_REACT_APP_API_URL}/asistencias/persona/uid/${user.uid}`
             );
             if (response.ok) {
-                const asistencias = await response.json();
-                console.log("Asistencias del usuario:", asistencias);
+                const asistenciasData = await response.json();
+                console.log("Asistencias del usuario:", asistenciasData);
 
-                // Obtener los IDs de los entrenamientos asociados a las asistencias
-                const entrenamientoIds = asistencias.map((asistencia) => asistencia.idEntrenamiento);
+                // Filtrar asistencias que tengan un idEntrenamiento válido
+                const asistenciasValidas = asistenciasData.filter(
+                    (asistencia) => asistencia.idEntrenamiento !== null
+                );
 
-                // Obtener los detalles de los entrenamientos
-                fetchEntrenamientos(entrenamientoIds);
+                setAsistencias(asistenciasValidas);
             } else {
                 setError("Error al obtener las asistencias del usuario.");
             }
@@ -35,61 +36,33 @@ const TrainingManagement = () => {
         }
     };
 
-    // Función para obtener los detalles de los entrenamientos
-    const fetchEntrenamientos = async (entrenamientoIds) => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/entrenamientos`);
-            if (response.ok) {
-                const data = await response.json();
-
-                // Filtrar los entrenamientos que están en la lista de IDs
-                const entrenamientosFiltrados = data.filter((entrenamiento) =>
-                    entrenamientoIds.includes(entrenamiento._id)
-                );
-
-                // Formatear los datos de los entrenamientos
-                const entrenamientosFormateados = entrenamientosFiltrados.map((entrenamiento) => ({
-                    ...entrenamiento,
-                    fecha: new Date(entrenamiento.fecha).toISOString().substring(0, 10),
-                    hora: entrenamiento.hora.slice(0, 5),
-                }));
-
-                setEntrenamientos(entrenamientosFormateados);
-            } else {
-                setError("Error al obtener los entrenamientos.");
-            }
-        } catch (err) {
-            setError(`Error de conexión: ${err.message}`);
-        }
-    };
-
-    // Efecto para cargar las asistencias y entrenamientos al montar el componente
+    // Efecto para cargar las asistencias al montar el componente
     useEffect(() => {
         fetchAsistencias();
-    }, [user]); // Dependencia: cuando el usuario cambie, se vuelven a cargar las asistencias
+    }, [user]);
 
     return (
         <div className="p-4" style={{ color: "white" }}>
-            <h1>Mis Entrenamientos</h1>
+            <h1>Mis Asistencias</h1>
 
             {mensaje && <div className="mt-3 alert alert-info">{mensaje}</div>}
             {error && <div className="alert alert-danger">{error}</div>}
 
-            {entrenamientos.length > 0 ? (
+            {Array.isArray(asistencias) && asistencias.length > 0 ? (
                 <div className="row">
-                    {entrenamientos.map((entrenamiento) => (
-                        <div key={entrenamiento._id} className="col-md-4 mb-4">
+                    {asistencias.map((asistencia, index) => (
+                        <div key={index} className="col-md-4 mb-4">
                             <div className="card">
                                 <div className="card-body">
-                                    <h5 className="card-title">Entrenamiento</h5>
+                                    <h5 className="card-title">Asistencia Registrada</h5>
                                     <p className="card-text">
-                                        <strong>Fecha:</strong> {entrenamiento.fecha}
+                                        <strong>Fecha:</strong> {new Date(asistencia.idEntrenamiento.fecha).toISOString().substring(0, 10)}
                                     </p>
                                     <p className="card-text">
-                                        <strong>Hora:</strong> {entrenamiento.hora}
+                                        <strong>Hora:</strong> {asistencia.idEntrenamiento.hora}
                                     </p>
                                     <p className="card-text">
-                                        <strong>Asistencia:</strong> Confirmada
+                                        <strong>Estado:</strong> Confirmada
                                     </p>
                                 </div>
                             </div>
@@ -97,7 +70,7 @@ const TrainingManagement = () => {
                     ))}
                 </div>
             ) : (
-                <p>No estás inscrito en ningún entrenamiento.</p>
+                <p>No tienes asistencias registradas.</p>
             )}
 
             <div style={{ position: "absolute", bottom: "0", right: "0", margin: "30px" }}>
