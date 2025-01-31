@@ -47,7 +47,7 @@ const AdminHome = () => {
                 <button
                     className="px-4 py-2 bg-primary text-white rounded-lg"
                     onClick={goto_Personas}>
-                    Gestion de Estudiantes
+                    Gestion de Personas
                 </button>
                 <button
                     className="px-4 py-2 bg-primary text-white rounded-lg"
