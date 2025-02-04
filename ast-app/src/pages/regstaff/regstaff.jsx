@@ -1,12 +1,12 @@
-import React from 'react'
-import Register from '../../components/Register'
+import React from "react";
+import Register from "../../components/Register";
 
 const regstaff = () => {
-    return (
-        <div>
-            <Register role="staff" />
-        </div>
-    )
-}
+  return (
+    <>
+      <Register role="staff" />
+    </>
+  );
+};
 
-export default regstaff
+export default regstaff;

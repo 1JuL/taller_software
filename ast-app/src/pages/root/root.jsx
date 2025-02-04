@@ -19,14 +19,14 @@ const Root = () => {
         </h1>
         <div className="d-flex flex-column gap-3">
           <button
-            className="px-4 py-2 bg-primary text-white rounded-lg"
+            className="px-4 py-2 bg-primary bg-gradient text-white rounded-lg"
             onClick={goto_Signup}>
-            Formulario de Registro
+            Registrarse
           </button>
           <button
-            className="px-4 py-2 bg-success text-white rounded-lg"
+            className="px-4 py-2 bg-success bg-gradient text-white rounded-lg"
             onClick={goto_Login}>
-            Inicio de Sesión
+            Iniciar de Sesión
           </button>
         </div>
       </div>

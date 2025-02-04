@@ -7,6 +7,7 @@ import StaffHome from "./staffHome";
 import AdminHome from "./adminHome";
 
 const Home = () => {
+  const { logout } = useAuth();
   const { user, role } = useAuth(); // Obtén el usuario y el rol del contexto
   const navigate = useNavigate();
   const [persona, setPersona] = useState(null); // Estado para almacenar la información de la persona
@@ -16,7 +17,9 @@ const Home = () => {
   // Función para obtener la información de la persona
   const fetchPersona = async (uid) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/personas/uid/${uid}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/personas/uid/${uid}`
+      );
       if (response.ok) {
         const data = await response.json();
         setPersona(data); // Almacenar la información de la persona
@@ -28,6 +31,10 @@ const Home = () => {
     } finally {
       setLoading(false); // Finalizar la carga
     }
+  };
+  const handleLogout = () => {
+    logout(); // Llama al método logout del contexto
+    navigate(ROUTES.LOGIN.path, { replace: true }); // Redirige a la página de login tras cerrar sesión
   };
 
   // Efecto para cargar la información de la persona cuando el usuario cambie
@@ -50,11 +57,12 @@ const Home = () => {
     } else {
       content = (
         <div className="d-flex flex-column gap-3">
-          <p className="text-white">Por favor, inicia sesión para acceder a esta página.</p>
+          <p className="text-white">
+            Por favor, inicia sesión para acceder a esta página.
+          </p>
           <button
             className="px-4 py-2 bg-primary text-white rounded-lg"
-            onClick={() => navigate(ROUTES.LOGIN.path)}
-          >
+            onClick={() => navigate(ROUTES.LOGIN.path)}>
             Iniciar sesión
           </button>
         </div>
@@ -64,18 +72,33 @@ const Home = () => {
 
   return (
     <>
-      <section className="d-flex h-100 flex-column align-items-center justify-content-center">
-        <div className="d-flex flex-column items-center justify-center min-h-screen bg-gray-100 m-5">
-          <h1 className="text-2xl font-medium mb-4 text-center text-white">AST</h1>
+      <section className="d-flex h-100 w-100 flex-column align-items-center justify-content-center">
+        <div className="d-flex flex-column items-center justify-center min-h-screen w-75 m-5">
+          <h1 className="text-2xl font-medium mb-4 text-center text-white">
+            AST
+          </h1>
 
           {/* Mensaje de bienvenida */}
           {loading ? (
             <h3 className="text-white">Cargando...</h3>
           ) : error ? (
-            <h3 className="text-red-500">{error}</h3>
+            <h3 className="text-danger">{error}</h3>
           ) : persona ? (
-            <h3 className="text-white mb-4">Bienvenido, {persona.nombre}!</h3>
+            <h3 className="text-white mb-4 text-center">
+              Bienvenido, {persona.nombre}!
+            </h3>
           ) : null}
+          <button
+            className="px-4 py-2 bg-danger bg-gradient text-white rounded-pill"
+            style={{
+              position: "absolute",
+              top: "0",
+              right: "0",
+              margin: "20px",
+            }}
+            onClick={handleLogout}>
+            Cerrar sesión
+          </button>
 
           {content}
         </div>

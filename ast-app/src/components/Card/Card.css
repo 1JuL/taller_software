@@ -1,0 +1,48 @@
+.Card {
+  user-select: none;
+  max-width: 400px;
+  min-height: 5rem;
+  max-height: 9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: solid 1px #353a46;
+  border-radius: 0.75rem;
+  padding: 0.8rem 1.5rem;
+  padding-bottom: 2.5rem;
+  box-shadow: 0 0.5em 1em -0.125em rgba(255, 255, 255, 0.102),
+    0 0px 0 1px rgba(255, 255, 255, 0.02);
+  transition: all 0.4s ease-out;
+  cursor: pointer;
+}
+
+.Card:hover {
+  transform: translateY(-10px);
+  border-color: var(--card-color);
+  box-shadow: 0 0.5em 1.5em -0.125em var(--card-color);
+}
+.Card:active {
+  transform: translateY(10px);
+}
+
+.Card-icon {
+  color: var(--card-color);
+}
+
+.Card-title {
+  font-size: 18px;
+  color: white;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.Card-text {
+  font-weight: 500;
+}
+
+.Card-subtitle {
+  font-weight: 500;
+  text-align: center;
+  font-size: 14px;
+  color: #768198;
+}
