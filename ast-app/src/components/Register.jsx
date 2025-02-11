@@ -50,128 +50,102 @@ const Register = ({ role = "user" }) => {
     }
   };
 
+  // Expresiones regulares para validación
+  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  const direccionPattern = /^(?=(?:[^#]*#){0,1}[^#]*$)(?=(?:[^-]*-){0,1}[^-]*$)[a-zA-Z0-9\s#-]+$/;
+  const telefonoPattern = /^3\d{9}$/;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "nombre") {
-      if (!/^[a-zA-Z6\s]*$/.test(value)) return;
+    switch (name) {
+      case "nombre":
+        if (!/^[a-zA-Z6\s]*$/.test(value)) return;
+        break;
+
+      case "apellido":
+        if (!/^[a-zA-Z\s]*$/.test(value)) return;
+        break;
+
+      case "telefono":
+        if (!/^\d*$/.test(value) || value.length > 10) return;
+        break;
+
+      case "direccion":
+        if (!direccionPattern.test(value)) return;
+        break;
     }
 
-    if (name === "apellido") {
-      if (!/^[a-zA-Z\s]*$/.test(value)) return;
-    }
-
-    if (name === "telefono") {
-      if (!/^\d*$/.test(value)) {
-        setMessage("El teléfono solo puede contener números.");
-        setType("error");
-        setShow(true);
-        return;
-      }
-
-      // Limitar a solo dígitos
-      const newValue = value.replace(/\D/g, ""); // Eliminar cualquier carácter que no sea un dígito
-
-      // Permitir la escritura progresiva hasta 10 dígitos
-      if (newValue.length > 10) {
-        setMessage("El teléfono debe tener máximo 10 dígitos.");
-        setType("error");
-        setShow(true);
-        return;
-      }
-
-      // Validar solo cuando el usuario haya ingresado los 10 dígitos
-      if (newValue.length === 10) {
-        const phonePattern = /^3\d{9}$/; // Empieza con 3 y tiene 9 dígitos más
-        const zeroPattern = /00000+/; // No puede tener más de 3 ceros consecutivos
-
-        if (!phonePattern.test(newValue)) {
-          setMessage("El teléfono debe empezar con 3 y tener 10 dígitos.");
-          setType("error");
-          setShow(true);
-          return;
-        }
-
-        if (zeroPattern.test(newValue)) {
-          setMessage(
-            "El teléfono no puede tener más de cuatro ceros consecutivos."
-          );
-          setType("error");
-          setShow(true);
-          return;
-        }
-      }
-    }
-
-    if (name === "email") {
-      // Validación del email solo al cambiarlo, no en cada letra
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-
-    if (name === "direccion") {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-
-    if (name === "fechaNacimiento") {
-      const year = new Date(value).getFullYear();
-      const currentYear = new Date().getFullYear();
-
-      if (year < 1875) {
-        setMessage("La fecha de nacimiento no puede ser anterior a 1875.");
-        setType("error");
-        setShow(true);
-        return;
-      } else if (year > currentYear) {
-        setMessage("Digite una fecha válida.");
-        setType("error");
-        setShow(true);
-        return;
-      }
-    }
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = [];
 
-    const direccionPattern = /^[a-zA-Z]{4,12}#\d{1,3}([A-Za-z]{3})?-\d{1,3}([A-Za-z]{3})?$/;
-    if (!direccionPattern.test(formData.direccion)) {
-      setMessage("La dirección no tiene el formato correcto.");
-      setType("error");
-      setShow(true);
-      return; // Detener el envío si la dirección es inválida
+    // Validación de todos los campos
+    if (!formData.nombre.trim()) errors.push("El nombre es requerido");
+    if (!formData.apellido.trim()) errors.push("El apellido es requerido");
+
+    if (!formData.fechaNacimiento) {
+      errors.push("La fecha de nacimiento es requerida");
+    } else {
+      const fecha = new Date(formData.fechaNacimiento);
+      if (isNaN(fecha)) errors.push("Fecha inválida");
+      const year = fecha.getFullYear();
+      const currentYear = new Date().getFullYear()
+      const hundredyear = currentYear - 100
+      const sixyears = currentYear - 6
+      if (year < hundredyear || year > sixyears) {
+        errors.push(`Fecha de nacimiento fuera del rango válido (${hundredyear}-${sixyears})`);
+      }
     }
 
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    // Validación del teléfono
+    if (!telefonoPattern.test(formData.telefono)) {
+      errors.push("Teléfono debe tener 10 dígitos y comenzar con 3");
+    } else {
+      // Validación adicional: No ceros en el cuarto y quinto dígito
+      if (formData.telefono[3] === "0" || formData.telefono[4] === "0") {
+        errors.push("El teléfono no puede tener ceros en el cuarto y quinto dígito");
+      }
+
+      // Validación adicional: No más de 3 ceros seguidos
+      if (/(0{4,})/.test(formData.telefono)) {
+        errors.push("El teléfono no puede tener más de 3 ceros seguidos");
+      }
+    }
+
+    if (!direccionPattern.test(formData.direccion)) {
+      errors.push("La dirección solo permite letras, números, # y -");
+    }
+
     if (!emailPattern.test(formData.email)) {
-      setMessage("Por favor, ingresa un correo electrónico válido.");
+      errors.push("Correo electrónico inválido");
+    }
+
+    if (formData.password.length < 6) {
+      errors.push("La contraseña debe tener al menos 6 caracteres");
+    }
+
+    if (errors.length > 0) {
+      setMessage(errors.join(" || "));
       setType("error");
       setShow(true);
-      return; // Detener el envío si el email es inválido
+      return;
     }
 
     try {
-      // 1. Crear el usuario en Firebase Auth
-      const { email, password } = formData;
+      // Crear usuario en Firebase
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password
+        formData.email,
+        formData.password
       );
-      const user = userCredential.user;
-      const uid = user.uid; // Obtener el UID del usuario creado
 
-      // 2. Guardar los datos adicionales en MongoDB
+      const user = userCredential.user;
+      const uid = user.uid; //
+
       const userData = {
         uid,
         nombre: formData.nombre,
@@ -182,23 +156,26 @@ const Register = ({ role = "user" }) => {
         email: formData.email,
         role,
       };
-      const response = await axios.post(
-        "https://api-arqui.vercel.app/personas",
+
+      console.log(userData)
+
+      // Guardar en MongoDB
+      await axios.post("https://api-arqui.vercel.app/personas",
         userData
       );
-      console.log("Persona creada:", response.data);
 
-      setMessage("Registro exitoso");
+      setMessage("Registro exitoso!");
       setType("success");
       setShow(true);
-      navigate("/login");
+      console.log("Registro Exitoso")
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
-      console.error("Error al registrar la persona:", error);
-      setMessage(`Hubo un problema: ${error.message || error}`);
+      setMessage(`Error: ${error.message}`);
       setType("error");
       setShow(true);
     }
   };
+
 
   return (
     <section className="h-100 d-flex justify-content-center align-items-center text-white">
