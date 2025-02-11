@@ -53,8 +53,12 @@ const Register = ({ role = "user" }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "nombre" || name === "apellido") {
-      if (!/^[a-zA-Z0-9\s]*$/.test(value)) return;
+    if (name === "nombre") {
+      if (!/^[a-zA-Z6\s]*$/.test(value)) return;
+    }
+
+    if (name === "apellido") {
+      if (!/^[a-zA-Z\s]*$/.test(value)) return;
     }
 
     if (name === "telefono") {
@@ -107,8 +111,11 @@ const Register = ({ role = "user" }) => {
       });
     }
 
-    if (name === "direccion" && !/^[a-zA-Z0-9\s,#.-]*$/.test(value)) {
-      return;
+    if (name === "direccion") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
     }
 
     if (name === "fechaNacimiento") {
@@ -136,6 +143,14 @@ const Register = ({ role = "user" }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const direccionPattern = /^[a-zA-Z]{4,12}#\d{1,3}([A-Za-z]{3})?-\d{1,3}([A-Za-z]{3})?$/;
+    if (!direccionPattern.test(formData.direccion)) {
+      setMessage("La dirección no tiene el formato correcto.");
+      setType("error");
+      setShow(true);
+      return; // Detener el envío si la dirección es inválida
+    }
 
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailPattern.test(formData.email)) {

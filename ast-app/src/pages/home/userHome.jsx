@@ -65,6 +65,15 @@ const UserHome = () => {
               color="#D0021B"
             />
           </Col>
+          <Col sm={4}>
+            <Card
+              title="Torneos"
+              description="Ver todos los torneos"
+              handleClick={goto_Torneos}
+              icon={TbTournament}
+              color="#D0021B"
+            />
+          </Col>
         </Row>
       </Container>
     </>
